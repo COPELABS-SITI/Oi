@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="pt.ulusofona.copelabs.oi_ndn.activities.MainActivity">
+    <item
+        android:id="@+id/user_configuration"
+        android:icon="@drawable/ic_account_settings_variant"
+        android:orderInCategory="100"
+        android:title="@string/user_config"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/newChat"
+        android:orderInCategory="100"
+        android:title="@string/emergency"
+        android:icon="@drawable/ic_message_plus"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/emergency"
+        android:icon="@drawable/ic_alarm_light"
+        android:orderInCategory="100"
+        android:title="@string/emergency_message"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/messageConfiguration"
+        android:icon="@drawable/ic_message_settings_variant_blue"
+        android:orderInCategory="100"
+        android:title="@string/message_configuration"
+        app:showAsAction="never" />
+</menu>
