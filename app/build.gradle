@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "pt.example.copelabs.oindn_v1"
+        applicationId "pt.example.copelabs.oi"
         minSdkVersion 18
         targetSdkVersion 26
         versionCode 1
