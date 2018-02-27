@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ulusofona.copelabs.oi_ndn.pt.ulusofona.copelabs.oi_ndn.activities.EmergencyMessageActivity">
+    tools:context="pt.ulusofona.copelabs.oi.activities.EmergencyMessageActivity">
 
 
     <TextView

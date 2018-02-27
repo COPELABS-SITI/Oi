@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.ulusofona.copelabs.oi_ndn.pt.ulusofona.copelabs.oi_ndn.activities.UserSelectionActivity">
+    tools:context="pt.ulusofona.copelabs.oi.activities.UserSelectionActivity">
 
     <TextView
         android:id="@+id/textView2"

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pt.ulusofona.copelabs.oi_ndn.activities.ConversationActivity">
+    tools:context="pt.ulusofona.copelabs.oi.activities.ConversationActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"

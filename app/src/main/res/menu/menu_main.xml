@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="pt.ulusofona.copelabs.oi_ndn.activities.MainActivity">
+    tools:context="pt.ulusofona.copelabs.oi.activities.MainActivity">
     <item
         android:id="@+id/user_configuration"
         android:icon="@drawable/ic_account_settings_variant"

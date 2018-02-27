@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.ulusofona.copelabs.oi_ndn">
+    package="pt.ulusofona.copelabs.oi">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.UserSelectionActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.UserSelectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashThemeBlue">
             <intent-filter>
@@ -25,34 +25,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.AuthoritySelectionActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.AuthoritySelectionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashThemeRed" />
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.EndUserActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.EndUserActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.ConversationActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.ConversationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.ulusofona.copelabs.oi_ndn.activities.EndUserActivity" />
+                android:value="pt.ulusofona.copelabs.oi.activities.EndUserActivity" />
         </activity>
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.AuthorityActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.AuthorityActivity"
             android:screenOrientation="portrait"
             android:theme="@style/EmergencyTheme" />
         <activity
-            android:name="pt.ulusofona.copelabs.oi_ndn.activities.UserConfigurationActivity"
+            android:name="pt.ulusofona.copelabs.oi.activities.UserConfigurationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ThemeBlue" />
-        <activity android:name="pt.ulusofona.copelabs.oi_ndn.activities.EmergencyMessageActivity"
+        <activity android:name="pt.ulusofona.copelabs.oi.activities.EmergencyMessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/EmergencyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.ulusofona.copelabs.oi_ndn.activities.EndUserActivity" />
+                android:value="pt.ulusofona.copelabs.oi.activities.EndUserActivity" />
         </activity>
     </application>
 
