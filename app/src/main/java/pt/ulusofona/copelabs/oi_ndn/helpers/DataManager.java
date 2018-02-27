@@ -362,12 +362,16 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
                 Log.d(TAG, "Contact name: " + contact.getName() + " contact id: " +contact.getID());
 
                 try {
-                    Log.d(TAG, "hash: " + Utils.hashMD5(contact.getID() + mLocalContact.getID() )+ " name from interes: " + Utils.getConversationID(interest.getName().toString()) );
-                    if (Utils.hashMD5(mLocalContact.getID()+ contact.getID()).equals(Utils.getConversationID(interest.getName().toString())))
-                        DataManagerListenerManager.notifyInvitationListeners(contact);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+                    Log.d(TAG, "hash: " + Utils.hashMD5(contact.getID() + mLocalContact.getID()) + " name from interes: " + Utils.getConversationID(interest.getName().toString()));
+                    if (Utils.hashMD5(mLocalContact.getID() + contact.getID()).equals(Utils.getConversationID(interest.getName().toString()))) {
+                        if (!mDBMngr.hasConversation(mLocalContact.getID() + contact.getID())) {
+                            DataManagerListenerManager.notifyInvitationListeners(contact);
+                        }
+                    }
+                    } catch(NoSuchAlgorithmException e){
+                        e.printStackTrace();
+                    }
+
             }
 
         }

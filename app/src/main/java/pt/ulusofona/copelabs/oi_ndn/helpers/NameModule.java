@@ -33,7 +33,7 @@ public abstract class NameModule {
     /**
      * Application name used to integrate prefixes.
      */
-    public static final String APPLICATION_NAME = "opp";
+    public static final String APPLICATION_NAME = "oi";
 
     /**
      * General Prefix name.

@@ -2,7 +2,6 @@ package pt.ulusofona.copelabs.oi_ndn.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,150 +11,108 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-
-import pt.ulusofona.copelabs.oi_ndn.adapters.MessageListAdapter;
-import pt.ulusofona.copelabs.oi_ndn.helpers.DataManager;
-import pt.ulusofona.copelabs.oi_ndn.helpers.DataManagerListenerManager;
-import pt.ulusofona.copelabs.oi_ndn.helpers.OiDataBaseManager;
-import pt.ulusofona.copelabs.oi_ndn.models.Contact;
-import pt.ulusofona.copelabs.oi_ndn.models.Conversation;
-import pt.ulusofona.copelabs.oi_ndn.models.Message;
-
 import java.util.ArrayList;
 
-public class ConversationActivity extends AppCompatActivity implements DataManager.DataManagerInterface {
+import pt.ulusofona.copelabs.oi_ndn.adapters.MessageListAdapter;
+import pt.ulusofona.copelabs.oi_ndn.interfaces.ConversationContract;
+import pt.ulusofona.copelabs.oi_ndn.models.Message;
+import pt.ulusofona.copelabs.oi_ndn.presenters.ConversationPresenter;
 
+/**
+ * This class is a AppCompactActivity class which shows the messages exchanged in the conversation.
+ * From here , users can create new messages an send it.
+ *
+ * @author Omar Aponte (COPELABS/ULHT)
+ * @version 1.0
+ *          COPYRIGHTS COPELABS/ULHT, LGPLv3.0, 02/14/18
+ */
+public class ConversationActivity extends AppCompatActivity implements
+        ConversationContract.View,
+        View.OnClickListener {
+    /**
+     * Variable used for debug.
+     */
     private static final String TAG = ConversationActivity.class.getSimpleName();
+    /**
+     * EditText used to collect the content of the message.
+     */
     private EditText mContentEditText;
+
     private ArrayList<Message> mConversations;
+    /**
+     * Adapter used to display the messages received and sent.
+     */
     private MessageListAdapter mMessageAdapter;
-    private DataManager mDataMngr;
-    private RecyclerView  mMessageRecycler;
-    private int mSequence;
-    private OiDataBaseManager mDBMngr;
-    private static final String SET_BLANK_TEXT ="";
-    private Conversation mConversation;
+    /**
+     * RecyclerView used to contain the adapter of the message.
+     */
+    private RecyclerView mMessageRecycler;
+    /**
+     * TextView displays the name of the contact which the conversation is established.
+     */
+    private TextView mContactTextView;
+    /**
+     * View interface implemented by this activity.
+     */
+    private ConversationContract.Presenter mPresenter;
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        DataManagerListenerManager.registerListener(this);
-
-        mDataMngr = DataManager.getInstance(this);
-        mDBMngr = OiDataBaseManager.getInstance(this);
-        mSequence =mDBMngr.getNextSequence(mConversation.getID());
-        mConversations=mDBMngr.getAllMessage(mConversation);
-        mMessageAdapter = new MessageListAdapter(this, mConversations);
-        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mMessageRecycler.setAdapter(mMessageAdapter);
-        mMessageRecycler.smoothScrollToPosition(mConversations.size());
-
+        mPresenter.registerAsListener();
+        mPresenter.preLoad();
     }
+
+    /**
+     * This method performs the initial set up of the view.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(pt.ulusofona.copelabs.oi_ndn.R.layout.activity_conversation);
 
         Log.d(TAG, "onCreate");
-        String localContactName = getIntent().getStringExtra("LOCAL_CONTACT_NAME");
-        String localContactId= getIntent().getStringExtra("LOCAL_CONTACT_ID");
-        String contactName = getIntent().getStringExtra("CONTACT_NAME");
-        String contactId = getIntent().getStringExtra("CONTACT_ID");
 
-        mConversation= new Conversation(new Contact(localContactId,localContactName),new Contact(contactId,contactName));
-
-        TextView txtContactName= findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.textView);
-        txtContactName.setText(contactName);
+        mContactTextView = findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.textView);
 
         mMessageRecycler = findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.recyclerView);
 
+        mPresenter = new ConversationPresenter(getIntent().getStringExtra("LOCAL_CONTACT_NAME"),
+                getIntent().getStringExtra("LOCAL_CONTACT_ID"),
+                getIntent().getStringExtra("CONTACT_NAME"),
+                getIntent().getStringExtra("CONTACT_ID"),
+                this,
+                this);
+
         ImageButton btn = findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.button);
-        mContentEditText =  findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.editTextUserName);
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(!mContentEditText.getText().equals(SET_BLANK_TEXT)) {
-                    Message message = new Message(mConversation.getLocalContact().getID(),mConversation.getContact().getID(), mContentEditText.getText().toString());
-                    message.setIsMine(Message.MESSAGE_IS_MINE);
-                    message.setIsSent(Message.MESSAGE_NO_SENT);
-                    message.setConversationId(mConversation.getID());
-
-                    mDataMngr.sendData(message, mSequence);
-                    mSequence++;
-
-                    mContentEditText.setText(SET_BLANK_TEXT);
-
-                    mConversations.add(message);
-
-                    updateRecyclerView();
-                }
-            }
-        });
+        mContentEditText = findViewById(pt.ulusofona.copelabs.oi_ndn.R.id.editTextUserName);
+        btn.setOnClickListener(this);
 
     }
 
     @Override
-    protected void onPause(){
-        DataManagerListenerManager.unRegisterListener(this);
+    protected void onPause() {
+        mPresenter.unregisterAsListener();
         super.onPause();
     }
 
-    public void updateRecyclerView(){
+    public void updateRecyclerView() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mMessageAdapter.notifyDataSetChanged();
-                mMessageRecycler.smoothScrollToPosition(mConversations.size()-1);
+                mMessageRecycler.smoothScrollToPosition(mConversations.size() - 1);
             }
         });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if ( id == android.R.id.home ) {
-            finish();
-            return true;
-        }
+        mPresenter.itemMenuSelect(item);
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void dataInComing(Message message) {
-        Log.d(TAG,"data icoming conversation id: " + message.getConversationId() +" conversation Id of actual: " + mConversation.getID());
-        if(message.getConversationId().equals(mConversation.getIDBack())) {
-            mConversations.add(message);
-            updateRecyclerView();
-        }
-    }
-
-    @Override
-    public void dataSent(boolean isSent, String id) {
-        Log.d(TAG,"Data Status message id: " +id + " was sent: "+isSent);
-        if(isSent){
-            for(Message a: mConversations){
-                if(a.getID().equals(id)){
-                    a.setIsSent(Message.MESSAGE_IS_SENT);
-                }
-            }
-        }else{
-            for(Message a: mConversations) {
-                if (a.getID().equals(id)) {
-                    a.setIsSent(Message.MESSAGE_NO_SENT);
-                }
-            }
-        }
-        updateRecyclerView();
-    }
-
-    @Override
-    public void dataReceived(boolean isReceived, String id) {
-        for(Message a: mConversations) {
-            if (a.getID().equals(id)) {
-                a.setIsDelivered(true);
-            }
-        }
-        updateRecyclerView();
     }
 
     @Override
@@ -163,4 +120,67 @@ public class ConversationActivity extends AppCompatActivity implements DataManag
         super.onDestroy();
     }
 
+    /**
+     * shows the name of the contact with the conversation is established.
+     *
+     * @param contactName Name of the contact.
+     */
+    @Override
+    public void showContactName(String contactName) {
+        mContactTextView.setText(contactName);
+    }
+
+    /**
+     * This is used to set any message in the edit text field used to create message content.
+     *
+     * @param content Content on the message.
+     */
+    @Override
+    public void setMessageEditText(String content) {
+
+    }
+
+    /**
+     * Shows the messages when the activity is started.
+     *
+     * @param messages
+     */
+    @Override
+    public void loadMessages(final ArrayList<Message> messages) {
+        mMessageAdapter = new MessageListAdapter(this, messages);
+        mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mMessageRecycler.setAdapter(mMessageAdapter);
+        mMessageRecycler.smoothScrollToPosition(messages.size());
+    }
+
+    /**
+     * Any time a new message arrives in the data manager or  the messages change theirs status, this
+     * method is used to notify those cases.
+     *
+     * @param messages
+     */
+    @Override
+    public void showMessageSentStatus(final ArrayList<Message> messages) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMessageAdapter.notifyDataSetChanged();
+                mMessageRecycler.smoothScrollToPosition(messages.size() - 1);
+            }
+        });
+    }
+
+    /**
+     * This method performs an action when the activity closes.
+     */
+    @Override
+    public void exitAction() {
+        finish();
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        mPresenter.sendMessage(mContentEditText.getText().toString());
+    }
 }

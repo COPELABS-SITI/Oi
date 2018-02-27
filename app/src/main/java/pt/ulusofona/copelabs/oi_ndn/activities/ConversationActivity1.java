@@ -2,7 +2,6 @@ package pt.ulusofona.copelabs.oi_ndn.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 
 import pt.ulusofona.copelabs.oi_ndn.adapters.MessageListAdapter;
 import pt.ulusofona.copelabs.oi_ndn.helpers.DataManager;
@@ -21,11 +21,9 @@ import pt.ulusofona.copelabs.oi_ndn.models.Contact;
 import pt.ulusofona.copelabs.oi_ndn.models.Conversation;
 import pt.ulusofona.copelabs.oi_ndn.models.Message;
 
-import java.util.ArrayList;
+public class ConversationActivity1 extends AppCompatActivity implements DataManager.DataManagerInterface {
 
-public class ConversationActivity extends AppCompatActivity implements DataManager.DataManagerInterface {
-
-    private static final String TAG = ConversationActivity.class.getSimpleName();
+    private static final String TAG = ConversationActivity1.class.getSimpleName();
     private EditText mContentEditText;
     private ArrayList<Message> mConversations;
     private MessageListAdapter mMessageAdapter;
