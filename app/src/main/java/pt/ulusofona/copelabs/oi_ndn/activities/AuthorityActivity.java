@@ -38,7 +38,7 @@ public class AuthorityActivity extends AppCompatActivity implements
     private static final String TAG = AuthorityActivity.class.getSimpleName();
 
     /**
-     * This Array contains every message receive.
+     * This Array contains every message received.
      */
     private ArrayList<Message> mMessages = new ArrayList<>();
 

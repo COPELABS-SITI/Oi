@@ -31,7 +31,7 @@ public class ConversationPresenter implements ConversationContract.Presenter,
      */
     private static final String TAG = ConversationPresenter.class.getSimpleName();
     /**
-     * Used to set blank text in the text field.
+     * Used to set blank text in the message text field..
      */
     private static final String SET_BLANK_TEXT = "";
     /**
