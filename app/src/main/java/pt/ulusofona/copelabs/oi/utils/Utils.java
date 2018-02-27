@@ -2,6 +2,7 @@ package pt.ulusofona.copelabs.oi.utils;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -196,5 +197,20 @@ public abstract class Utils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * This function is used to verify if a package is installed in the device.
+     * @param packagename Name of the package.
+     * @param packageManager Package manager.
+     * @return Boolean value where true value means the package is installed, otherwise false.
+     */
+    public static boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packagename, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }

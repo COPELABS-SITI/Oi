@@ -1,6 +1,9 @@
 package pt.ulusofona.copelabs.oi.activities;
 
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 
 import pt.ulusofona.copelabs.oi.R;
+import pt.ulusofona.copelabs.oi.fragment.MessageConfigDialogFragment;
+import pt.ulusofona.copelabs.oi.fragment.MessageNDNRequest;
 import pt.ulusofona.copelabs.oi.interfaces.UserSelectionContract;
 import pt.ulusofona.copelabs.oi.presenters.UserSelectionPresenter;
 
@@ -20,7 +25,8 @@ import pt.ulusofona.copelabs.oi.presenters.UserSelectionPresenter;
  * @version 1.0
  *          COPYRIGHTS COPELABS/ULHT, LGPLv3.0, 02/14/18
  */
-public class UserSelectionActivity extends AppCompatActivity implements View.OnClickListener, UserSelectionContract.View {
+public class UserSelectionActivity extends AppCompatActivity implements View.OnClickListener, UserSelectionContract.View
+,MessageNDNRequest.MessageNDNRequestInterface{
 
     /**
      * Variable used for debug.
@@ -35,7 +41,7 @@ public class UserSelectionActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new UserSelectionPresenter(this, this);
+        mPresenter = new UserSelectionPresenter(this, this,this);
     }
 
     /**
@@ -106,6 +112,31 @@ public class UserSelectionActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent(UserSelectionActivity.this, UserConfigurationActivity.class);
         intent.putExtra(UserConfigurationActivity.FROM_ACTIVITY, UserConfigurationActivity.FROM_USER_SELECTION_ACTIVITY);
         startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Starts the NDN application.
+     */
+    @Override
+    public void startNDN() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null)
+            ft.remove(prev);
+        ft.addToBackStack(null);
+        MessageNDNRequest newFragment = MessageNDNRequest.newInstance(0);
+        newFragment.show(ft, "dialog");
+    }
+
+    /**
+     * Notifies when the user press the button. This method is called form the button function.
+     */
+    @Override
+    public void OnRequestAccepted() {
+        Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + "pt.ulusofona.copelabs.ndn"));
+        marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET|Intent.FLAG_ACTIVITY_MULTIPLE_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(marketIntent);
         finish();
     }
 }

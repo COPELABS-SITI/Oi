@@ -47,4 +47,7 @@
 
     <string name="progress_message">Registering prefixes ...</string>
 
+    <string name="important">Important</string>
+    <string name="request_message"> In order to use Oi! application, NDN-Opp is required. Press accept and install the application.</string>
+
 </resources>

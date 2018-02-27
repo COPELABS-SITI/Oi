@@ -40,6 +40,11 @@ public interface UserSelectionContract {
          * Starts the EndUserConfigurationActivity.
          */
         void startUserConfigurationActivity();
+
+        /**
+         * Starts the NDN application.
+         */
+        void startNDN();
     }
 
     /**

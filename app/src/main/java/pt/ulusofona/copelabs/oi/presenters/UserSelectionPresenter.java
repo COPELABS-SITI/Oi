@@ -1,9 +1,15 @@
 package pt.ulusofona.copelabs.oi.presenters;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.util.Log;
 
 import pt.ulusofona.copelabs.oi.interfaces.UserSelectionContract;
 import pt.ulusofona.copelabs.oi.helpers.Preferences;
+import pt.ulusofona.copelabs.oi.utils.Utils;
 
 /**
  * This class is part of Oi application.
@@ -34,15 +40,23 @@ public class UserSelectionPresenter implements UserSelectionContract.Presenter {
     private Activity mActivity;
 
     /**
+     * Context of the application.
+     */
+    private Context mContext;
+
+    /**
      * UserSelectionPresenter constructor.
      *
      * @param view     View interface implemented by the activity.
      * @param activity Activity from where is initialized the presenter.
      */
-    public UserSelectionPresenter(UserSelectionContract.View view, Activity activity) {
+    public UserSelectionPresenter(UserSelectionContract.View view, Activity activity, Context context) {
         mView = view;
         mActivity = activity;
+        mContext=context;
         start();
+
+
     }
 
 
@@ -62,7 +76,7 @@ public class UserSelectionPresenter implements UserSelectionContract.Presenter {
                 break;
             case Preferences.DEFAULT_VALUE_USER:
                 mView.startDefaultActivity();
-                mView.showInitialMessage();
+                checkNDNOpp();
                 break;
         }
     }
@@ -75,13 +89,30 @@ public class UserSelectionPresenter implements UserSelectionContract.Presenter {
      */
     @Override
     public void startActivitySelected(int option) {
-        if (option == START_END_USER_ACTIVITY) {
-            Preferences.setUserConfiguration(mActivity, Preferences.USER_END_USER);
-            if (Preferences.getLocalContact(mActivity).getID() == null)
-                mView.startUserConfigurationActivity();
-            else
-                mView.startEndUserActivity();
-        } else
-            mView.startAuthorityActivity();
+        PackageManager pm = mContext.getPackageManager();
+        if(Utils.isPackageInstalled("pt.ulusofona.copelabs.now", pm)) {
+            if (option == START_END_USER_ACTIVITY) {
+                Preferences.setUserConfiguration(mActivity, Preferences.USER_END_USER);
+                if (Preferences.getLocalContact(mActivity).getID() == null)
+                    mView.startUserConfigurationActivity();
+                else
+                    mView.startEndUserActivity();
+            } else
+                mView.startAuthorityActivity();
+        }else
+            mView.startNDN();
+    }
+
+    /**
+     * This function is used to check if NDN-Opp application is installed.
+     */
+    public void checkNDNOpp(){
+        PackageManager pm = mContext.getPackageManager();
+        boolean isInstalled = Utils.isPackageInstalled("pt.ulusofona.copelabs.now", pm);
+        Log.d("Userselection", "application installed: " + isInstalled);
+        if(isInstalled)
+            mView.showInitialMessage();
+        else
+            mView.startNDN();
     }
 }
