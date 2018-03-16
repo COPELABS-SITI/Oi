@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -86,6 +87,7 @@ public class InvitationDialog extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         View v = inflater.inflate(pt.ulusofona.copelabs.oi.R.layout.fragment_invitation, container, false);
         mContactName = v.findViewById(pt.ulusofona.copelabs.oi.R.id.textViewContactName);
         Button btnAccept = v.findViewById(pt.ulusofona.copelabs.oi.R.id.buttonAccept);

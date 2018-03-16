@@ -96,7 +96,8 @@ public abstract class Utils {
     public static String divide(String text) {
         String string = text;
         String[] parts = string.split("/");
-        return parts[5];
+        //return parts[5];
+        return parts[4];
     }
 
     /**
@@ -109,7 +110,8 @@ public abstract class Utils {
     public static String getLastSequence(String text) {
         String string = text;
         String[] parts = string.split("/");
-        return parts[5];
+        //return parts[5];
+        return parts[4];
     }
 
     /**
@@ -121,7 +123,8 @@ public abstract class Utils {
     public static String reducePrefix(String text) {
         String string = text;
         String[] parts = string.split("/");
-        return parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "/" + parts[4]; // 004
+        //return parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] + "/" + parts[4]; // 004
+        return parts[0] + "/" + parts[1] + "/" + parts[2] + "/" + parts[3] ; // 004
     }
 
     /**
@@ -134,7 +137,8 @@ public abstract class Utils {
     public static String getConversationID(String text) {
         String string = text;
         String[] parts = string.split("/");
-        return parts[4];
+        //return parts[4];
+        return parts[3];
     }
 
     /**

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import pt.ulusofona.copelabs.oi.R;
@@ -67,6 +68,7 @@ public class EmergencyMessageDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         View v = inflater.inflate(R.layout.fragment_push_data, container, false);
         TextView txtContactName = v.findViewById(R.id.textViewContactName);
         TextView txtPhoneNumber = v.findViewById(R.id.textViewPhoneNumber);

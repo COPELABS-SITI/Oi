@@ -2,6 +2,7 @@ package pt.ulusofona.copelabs.oi.presenters;
 
 import android.app.Activity;
 
+import pt.ulusofona.copelabs.oi.activities.UserConfigurationActivity;
 import pt.ulusofona.copelabs.oi.helpers.Preferences;
 import pt.ulusofona.copelabs.oi.interfaces.UserConfigurationContract;
 import pt.ulusofona.copelabs.oi.models.Contact;
@@ -59,6 +60,11 @@ public class UserConfigurationPresenter implements UserConfigurationContract.Pre
      */
     @Override
     public void start() {
+        if(mFromActivity.equals(UserConfigurationActivity.FROM_USER_SELECTION_ACTIVITY))
+            mView.showActivityContuntryCode();
+        else
+            mView.showDefaultActivity();
+
         Contact contact = Preferences.getLocalContact(mActivity);
         mView.showContactInformation(contact.getName(), contact.getID());
         mView.hidePhoneNumberErrorMessage();

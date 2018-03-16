@@ -54,7 +54,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
     /**
      * Integer used to define the LifeTime of a typical interest NDN packet.
      */
-    public static double INTEREST_LIFETIME = 30000;
+    public static double INTEREST_LIFETIME = 300000;
     /**
      * Integer used to define the LifeTime of a Long Live Interest.
      */
@@ -116,7 +116,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         mDBMngr.openDB(true);
         mContext = context;
         new RegisterPrefixTask(mFace, NameModule.PREFIX, this, this, mContext).execute();
-        new RegisterPrefixTask(mFace, NameModule.PREFIX, this, this, mContext).execute();
+        //new RegisterPrefixTask(mFace, NameModule.PREFIX, this, this, mContext).execute();
         mHandler.postDelayed(mJndnProcessor, PROCESS_INTERVAL);
     }
 
@@ -139,7 +139,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      * This method is used to register prefixes of push data packets.
      */
     public void registerPushPrefix() {
-        new RegisterPrefixForPushedDataTask(mFace, NameModule.EMERGENCY_PREFIX, this, this, this).execute();
+        new RegisterPrefixForPushedDataTask(mFace, NameModule.EMERGENCY_PUSH, this, this, this).execute();
     }
 
     /**
@@ -148,9 +148,16 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      */
     public void expressAllEmergencyLLI() {
         try {
+            try {
             expressLLI(NameModule.EMERGENCY_PREFIX + NameModule.POLICE_NAME);
+                Thread.sleep(500);
             expressLLI(NameModule.EMERGENCY_PREFIX + NameModule.FIREFIGHTER_NAME);
+                Thread.sleep(500);
             expressLLI(NameModule.EMERGENCY_PREFIX + NameModule.SPECIAL_SERVICE_NAME);
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             expressLLI(NameModule.EMERGENCY_PREFIX + NameModule.RESCUE_TEAM_NAME);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -164,11 +171,8 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      */
     public void sendPushData(Message message) {
         Name dName = null;
-        try {
-            dName = new Name(NameModule.EMERGENCY_PREFIX + "/" + Utils.hashMD5(message.getContent()));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+        //dName = new Name(NameModule.EMERGENCY_PREFIX + "/" + Utils.hashMD5(message.getContent()));
+        dName = new Name(  NameModule.EMERGENCY_PUSH +"/"+ message.getContent());
         Data data = new Data(dName);
         data.setPushed(true);
         Blob blob = new Blob(message.getEmergencyMessageJSONObject().toString());
@@ -209,6 +213,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         Log.d(TAG, "Data content " + data.getContent().toString());
         Log.v(TAG, "Blob : " + message + " > " + Base64.encodeToString(blob.getImmutableArray(), Base64.NO_PADDING));
         data.setContent(blob);
+        Log.d(TAG, "Data size: " + data.getContent().size());
         mDBMngr.saveNewMessage(message);
         if (SYNC) {
             if (mInterests.containsKey(data.getName().toString()))
@@ -261,6 +266,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         Log.d(TAG, "express_Interest");
         Name name = new Name(prefix);
         Interest interest = new Interest(name, LLI_LIFETIME);
+
         interest.setLongLived(true);
         Log.d(TAG, "Expressing interest: " + interest.getName().toString());
         new ExpressInterestTask(mFace, interest, this, this).execute();
@@ -392,9 +398,9 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      */
     @Override
     public void onPushedData(Data data) {
-        Log.v(TAG, "Push Data Received : " + data.getName().toString());
+        Log.d(TAG, "Push Data Received : " + data.getName().toString());
         Message message = Utils.parseJsonToEmergencyMessage(data.getContent().toString());
-        Log.v(TAG, "Push Data Received : " + message.getContent());
+        Log.d(TAG, "Push Data Received : " + message.getContent());
 
     }
 
@@ -406,7 +412,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      */
     @Override
     public void onRegisterSuccess(Name name, long l) {
-        Log.v(TAG, "Registration Success : " + name.toString());
+        Log.d(TAG, "Registration Success : " + name.toString());
         Log.d(TAG, "Register ok");
     }
 
@@ -417,7 +423,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      */
     @Override
     public void onRegisterFailed(Name name) {
-        Log.v(TAG, "Registration Failed : " + name.toString());
+        Log.d(TAG, "Registration Failed : " + name.toString());
         Log.d(TAG, "Starting a new registration task");
         new RegisterPrefixForPushedDataTask(mFace, name.toString(), this, this, this).execute();
     }

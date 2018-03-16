@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import pt.ulusofona.copelabs.oi.R;
 import pt.ulusofona.copelabs.oi.interfaces.UserConfigurationContract;
 import pt.ulusofona.copelabs.oi.presenters.UserConfigurationPresenter;
 
@@ -77,10 +80,13 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
      */
     private EditText mPhoneNumberEditTxt;
 
+    private EditText mCountryCode;
+
+
 
     /**
      * Initial configuration is perform. The view is set and the presenter is created.
-     * Also listerne to the editText variables is add.
+     * Also listener to the editText variables is add.
      *
      * @param savedInstanceState
      */
@@ -88,15 +94,19 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration);
+        //setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration1);
+        //if(getIntent().getStringExtra(FROM_ACTIVITY).equals(FROM_END_USER_ACTIVITY))
 
-        mSaveButton = findViewById(pt.ulusofona.copelabs.oi.R.id.buttonDone);
-        mErrorUserNameTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView6);
-        mErrorPhoneNumberTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView7);
-        mUserNameEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextUserName);
-        mPhoneNumberEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextPhoneNumber);
+        /*if(getIntent().getStringExtra(FROM_ACTIVITY).equals(FROM_END_USER_ACTIVITY))
+            setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration);
+        else
+            setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration1);*/
+
+
 
         mPresenter = new UserConfigurationPresenter(this, this, getIntent().getStringExtra(FROM_ACTIVITY));
+
+
 
         //This listener is used to hide the error message once the user starts introduce content to the editText.
         mUserNameEditTxt.addTextChangedListener(new TextWatcher() {
@@ -113,6 +123,7 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
                 mPresenter.userNameEditTxtChanged(editable.length());
             }
         });
+
 
         //This listener is used to hide the error message once the user starts introduce content to the editText.
         mPhoneNumberEditTxt.addTextChangedListener(new TextWatcher() {
@@ -132,7 +143,10 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mPresenter.onFormFilled(mUserNameEditTxt.getText().toString(), mPhoneNumberEditTxt.getText().toString());
+                if(getIntent().getStringExtra(FROM_ACTIVITY).equals(UserConfigurationActivity.FROM_USER_SELECTION_ACTIVITY))
+                    mPresenter.onFormFilled(mUserNameEditTxt.getText().toString(), mCountryCode.getText().toString() + mPhoneNumberEditTxt.getText().toString());
+                else
+                    mPresenter.onFormFilled(mUserNameEditTxt.getText().toString(), mPhoneNumberEditTxt.getText().toString());
             }
         });
     }
@@ -215,6 +229,54 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
     public void enableSaveButton() {
         mSaveButton.setEnabled(true);
         mSaveButton.setBackgroundResource(pt.ulusofona.copelabs.oi.R.drawable.selector_button_blue);
+    }
+
+    @Override
+    public void showActivityContuntryCode() {
+        setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration1);
+        mSaveButton = findViewById(pt.ulusofona.copelabs.oi.R.id.buttonDone);
+        mErrorUserNameTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView6);
+        mErrorPhoneNumberTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView7);
+        mUserNameEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextUserName);
+        mPhoneNumberEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextPhoneNumber);
+        mCountryCode = findViewById(R.id.editTextCountryCode);
+
+        mCountryCode.setText("+");
+
+        //This listener is used to hide the error message once the user starts introduce content to the editText.
+        mCountryCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString().startsWith("+")){
+                    Selection.setSelection(mCountryCode.getText(), mCountryCode.getText().length());
+
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().startsWith("+")){
+                    mCountryCode.setText("+");
+                    Selection.setSelection(mCountryCode.getText(), mCountryCode.getText().length());
+
+                }
+            }
+        });
+    }
+
+    @Override
+    public void showDefaultActivity() {
+        setContentView(pt.ulusofona.copelabs.oi.R.layout.activity_user_configuration);
+        mSaveButton = findViewById(pt.ulusofona.copelabs.oi.R.id.buttonDone);
+        mErrorUserNameTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView6);
+        mErrorPhoneNumberTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.textView7);
+        mUserNameEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextUserName);
+        mPhoneNumberEditTxt = findViewById(pt.ulusofona.copelabs.oi.R.id.editTextPhoneNumber);
     }
 
 

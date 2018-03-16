@@ -60,6 +60,11 @@ public interface UserConfigurationContract {
          */
         void enableSaveButton();
 
+        void showActivityContuntryCode();
+
+        void showDefaultActivity();
+
+
     }
 
     interface Presenter {

@@ -50,4 +50,6 @@
     <string name="important">Important</string>
     <string name="request_message"> In order to use Oi! application, NDN-Opp is required. Press accept and install the application.</string>
 
+    <string name="configuration_message"> Important: \nOi! is able to establish communication only with your contacts which have country code register.</string>
+
 </resources>

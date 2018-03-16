@@ -59,6 +59,17 @@ public abstract class Preferences {
      * Name of the preferences which saves the value of phone number.
      */
     private static final String USER_PHONE_PREFERENCES = "Phone_Number";
+
+    /**
+     *
+     */
+    private static final String USER_COUNTRY_CODE = "country_code";
+
+    /**
+     *
+     */
+    private static final String DEFAULT_VALUE_COUNTRY_CODE = null;
+
     /**
      * Identifier of the preferences which saves the value of the local contact (End User).
      */

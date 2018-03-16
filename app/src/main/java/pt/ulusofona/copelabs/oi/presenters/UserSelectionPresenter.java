@@ -90,7 +90,7 @@ public class UserSelectionPresenter implements UserSelectionContract.Presenter {
     @Override
     public void startActivitySelected(int option) {
         PackageManager pm = mContext.getPackageManager();
-        if(Utils.isPackageInstalled("pt.ulusofona.copelabs.now", pm)) {
+        if(Utils.isPackageInstalled("pt.ulusofona.copelabs.ndn", pm)) {
             if (option == START_END_USER_ACTIVITY) {
                 Preferences.setUserConfiguration(mActivity, Preferences.USER_END_USER);
                 if (Preferences.getLocalContact(mActivity).getID() == null)
@@ -108,7 +108,7 @@ public class UserSelectionPresenter implements UserSelectionContract.Presenter {
      */
     public void checkNDNOpp(){
         PackageManager pm = mContext.getPackageManager();
-        boolean isInstalled = Utils.isPackageInstalled("pt.ulusofona.copelabs.now", pm);
+        boolean isInstalled = Utils.isPackageInstalled("pt.ulusofona.copelabs.ndn", pm);
         Log.d("Userselection", "application installed: " + isInstalled);
         if(isInstalled)
             mView.showInitialMessage();

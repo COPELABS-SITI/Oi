@@ -38,7 +38,7 @@ public abstract class NameModule {
     /**
      * General Prefix name.
      */
-    public static final String GENERAL_PREFIX = "/ndn/multicast/";
+    public static final String GENERAL_PREFIX = "/ndn/";
 
     /**
      * Base prefix used as initial part. To this prefix could be added more information in order
@@ -71,6 +71,8 @@ public abstract class NameModule {
      * Rescue team name.
      */
     public static final String RESCUE_TEAM_NAME = "rescueteam";
+
+    public static final String EMERGENCY_PUSH = PREFIX + "/emergency";
 
     /**
      * This function creates a prefix base on the emergency option received.

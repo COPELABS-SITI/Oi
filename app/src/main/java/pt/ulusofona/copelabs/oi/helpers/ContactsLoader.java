@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import pt.ulusofona.copelabs.oi.models.Contact;
 import pt.ulusofona.copelabs.oi.utils.Utils;
@@ -98,7 +99,16 @@ public class ContactsLoader implements LoaderManager.LoaderCallbacks<Cursor> {
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        mContacts.add(new Contact(phoneNo, name));
+
+                        if(phoneNo.contains("+")) {
+                            String[] sec = phoneNo.split(" ");
+                            phoneNo = "";
+                            for (int i = 0; i < sec.length; i++) {
+                                phoneNo += sec[i];
+                            }
+                            Log.d(TAG, phoneNo);
+                            mContacts.add(new Contact(phoneNo, name));
+                        }
                     }
                     pCur.close();
                 }
