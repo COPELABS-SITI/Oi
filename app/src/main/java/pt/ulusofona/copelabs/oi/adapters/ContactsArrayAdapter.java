@@ -70,9 +70,10 @@ public class ContactsArrayAdapter extends ArrayAdapter {
         ViewHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = mContext.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.contact, null);
+            convertView = inflater.inflate(R.layout.contact1, null);
             holder = new ViewHolder();
             holder.text = convertView.findViewById(R.id.contact_name);
+            holder.phone = convertView.findViewById(R.id.textViewPhoneNumber);
             convertView.setTag(holder);
         } else {
 
@@ -80,6 +81,7 @@ public class ContactsArrayAdapter extends ArrayAdapter {
 
         holder = (ViewHolder) convertView.getTag();
         holder.text.setText(mContacts.get(position).getName());
+        holder.phone.setText(mContacts.get(position).getID());
 
         return (convertView);
 
@@ -90,8 +92,13 @@ public class ContactsArrayAdapter extends ArrayAdapter {
      */
     private class ViewHolder {
         /**
-         * TextView that shows of the contact's user name.
+         * TextView that shows the contact's user name.
          */
         TextView text;
+
+        /**
+         * TextView that shows the contact's phone number.
+         */
+        TextView phone;
     }
 }
