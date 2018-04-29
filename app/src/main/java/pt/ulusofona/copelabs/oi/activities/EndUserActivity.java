@@ -74,6 +74,11 @@ public class EndUserActivity extends AppCompatActivity implements
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
     /**
+     * Variable used to identify the permission of location.
+     */
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 2;
+
+    /**
      * Registers the presenter as a listener of DataManager class.
      */
     @Override
@@ -245,10 +250,10 @@ public class EndUserActivity extends AppCompatActivity implements
             ft.remove(prev);
         ft.addToBackStack(null);
         EmergencyMessageDialog newFragment = EmergencyMessageDialog.newInstance(0,
-                "omar",
-                "123",
-                "hola",
-                "12:12");
+                message.getmUser(),
+                message.getFrom(),
+                message.getContent(),
+                message.getmDate());
         newFragment.show(ft, "dialog");
     }
 

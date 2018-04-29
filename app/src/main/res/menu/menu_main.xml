@@ -28,4 +28,9 @@
         android:orderInCategory="100"
         android:title="@string/message_configuration"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/cleanDB"
+        android:orderInCategory="100"
+        android:title="Clear all"
+        app:showAsAction="never" />
 </menu>

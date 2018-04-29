@@ -49,6 +49,9 @@ public class AuthorityPresenter implements DataManager.DataManagerEmergencyInter
         mView = view;
         mContext = context;
         mDataMngr = DataManager.getInstance(context);
+        mDataMngr.setTypeOfUser("Authority");
+        mView.loadEmergencyMessage(mDataMngr.getMessages());
+        mView.upDateListView();
     }
 
     @Override
@@ -99,6 +102,8 @@ public class AuthorityPresenter implements DataManager.DataManagerEmergencyInter
     @Override
     public void registerAsListener() {
         DataManagerListenerManager.registerEmergencyListeners(this);
+        //mView.loadEmergencyMessage(mDataMngr.getMessages());
+        //mView.upDateListView();
     }
 
     /**
@@ -106,7 +111,7 @@ public class AuthorityPresenter implements DataManager.DataManagerEmergencyInter
      */
     @Override
     public void unRegisterAsListener() {
-        DataManagerListenerManager.unRegisterEmergencyListeners(this);
+        //DataManagerListenerManager.unRegisterEmergencyListeners(this);
     }
 
     /**

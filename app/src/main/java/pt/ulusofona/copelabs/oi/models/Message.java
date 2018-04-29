@@ -100,6 +100,9 @@ public class Message {
      */
     private String mConversationId;
 
+    private String mLatitude;
+
+    private String mLongitude;
     /**
      * Constructor of Message class.
      *
@@ -345,6 +348,37 @@ public class Message {
     }
 
     /**
+     * Set latitude value.
+     * @param latitude String with the latitude value.
+     */
+    public void setLatitude(String latitude){
+        mLatitude=latitude;
+    }
+
+    /**
+     * Get latitude value;
+     * @return String with latitude value.
+     */
+    public String getLatitude(){
+        return mLatitude;
+    }
+
+    /**
+     * Set longitude value.
+     * @param longitude String with longitude value.
+     */
+    public void setLongitud(String longitude){
+        mLongitude = longitude;
+    }
+
+    /**
+     * Get longitude value.
+     * @return String with longitude value.
+     */
+    public String getLontitude(){
+        return mLongitude;
+    }
+    /**
      * This method transforms a message object to a JSON object.
      *
      * @return JSON object whit message information.
@@ -375,6 +409,8 @@ public class Message {
             jsonObject.put("sender", mUser);
             jsonObject.put("id", mID);
             jsonObject.put("from", mFrom);
+            jsonObject.put("la",mLatitude);
+            jsonObject.put("lo",mLongitude);
 
         } catch (JSONException e) {
             e.printStackTrace();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import pt.ulusofona.copelabs.oi.helpers.DataManager;
+import pt.ulusofona.copelabs.oi.helpers.LocationListener;
 import pt.ulusofona.copelabs.oi.helpers.NameModule;
 import pt.ulusofona.copelabs.oi.helpers.Preferences;
 import pt.ulusofona.copelabs.oi.interfaces.EmergencyMessageContract;
@@ -54,6 +55,11 @@ public class EmergencyMessagePresenter implements EmergencyMessageContract.Prese
     private Activity mActivity;
 
     /**
+     *
+     */
+    private LocationListener mLocationListener;
+
+    /**
      * Constructor of EmergencyMessagePresenter class.
      *
      * @param view     View interface implemented by the activity.
@@ -76,6 +82,7 @@ public class EmergencyMessagePresenter implements EmergencyMessageContract.Prese
         mView.hideErrorEmptyMessage();
         mView.hideErrorMessageOptionSelected();
         mDataManager = DataManager.getInstance(mContext);
+        mLocationListener = LocationListener.getInstance(mContext);
     }
 
     /**
@@ -100,6 +107,8 @@ public class EmergencyMessagePresenter implements EmergencyMessageContract.Prese
                 message.setUser(Preferences.getLocalContact(mActivity).getName());
                 message.setFrom(Preferences.getLocalContact(mActivity).getID());
                 message.setCreationTime();
+                message.setLatitude(mLocationListener.getLocation().getLatitude()+"");
+                message.setLongitud(mLocationListener.getLocation().getLongitude()+"");
 
                 if(mOptionSelected==NameModule.PEOPLE_NEARBY_ID)
                     mDataManager.sendPushData(message);

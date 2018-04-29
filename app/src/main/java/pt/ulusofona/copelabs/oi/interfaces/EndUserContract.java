@@ -111,5 +111,7 @@ public interface EndUserContract {
          */
         void loadContacts();
 
+        void startLocation();
+
     }
 }

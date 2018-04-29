@@ -8,10 +8,12 @@ import android.util.Log;
 import pt.ulusofona.copelabs.oi.utils.Utils;
 
 import net.named_data.jndn.Face;
+import net.named_data.jndn.Interest;
 import net.named_data.jndn.Name;
 import net.named_data.jndn.OnInterestCallback;
 import net.named_data.jndn.OnRegisterFailed;
 import net.named_data.jndn.OnRegisterSuccess;
+import net.named_data.jndn.encoding.WireFormat;
 import net.named_data.jndn.security.KeyChain;
 import net.named_data.jndn.security.SecurityException;
 
@@ -117,6 +119,7 @@ public class RegisterPrefixTask extends AsyncTask<Void, Void, Integer> {
         keyChain.setFace(mFace);
         try {
             mFace.setCommandSigningInfo(keyChain, keyChain.getDefaultCertificateName());
+
         } catch (SecurityException e) {
             e.printStackTrace();
             //Error occurred.

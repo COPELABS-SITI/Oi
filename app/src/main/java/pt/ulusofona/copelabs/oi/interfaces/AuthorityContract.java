@@ -1,5 +1,7 @@
 package pt.ulusofona.copelabs.oi.interfaces;
 
+import java.util.ArrayList;
+
 import pt.ulusofona.copelabs.oi.models.Message;
 
 /**
@@ -43,6 +45,11 @@ public interface AuthorityContract {
          * Updates the listView once a new message is added to the Array message.
          */
         void upDateListView();
+
+        /**
+         *
+         */
+        void loadEmergencyMessage(ArrayList<Message> messages);
     }
 
     /**

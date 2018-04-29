@@ -197,4 +197,9 @@ public class AuthorityActivity extends AppCompatActivity implements
         });
 
     }
+
+    @Override
+    public void loadEmergencyMessage(ArrayList<Message> messages) {
+        mMessages.addAll(messages);
+    }
 }

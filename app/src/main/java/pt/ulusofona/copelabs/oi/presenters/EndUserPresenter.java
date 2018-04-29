@@ -3,13 +3,17 @@ package pt.ulusofona.copelabs.oi.presenters;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
+import pt.ulusofona.copelabs.oi.R;
 import pt.ulusofona.copelabs.oi.fragment.MessageConfigDialogFragment;
 import pt.ulusofona.copelabs.oi.helpers.ContactsLoader;
 import pt.ulusofona.copelabs.oi.helpers.DataManager;
 import pt.ulusofona.copelabs.oi.helpers.DataManagerListenerManager;
+import pt.ulusofona.copelabs.oi.helpers.LocationListener;
 import pt.ulusofona.copelabs.oi.helpers.OiDataBaseManager;
 import pt.ulusofona.copelabs.oi.helpers.Preferences;
 import pt.ulusofona.copelabs.oi.interfaces.EndUserContract;
@@ -31,19 +35,25 @@ import java.util.ArrayList;
  *          COPYRIGHTS COPELABS/ULHT, LGPLv3.0, 02/14/18
  */
 
-public class EndUserPresenter implements EndUserContract.Presenter, DataManager.PushData, DataManager.Invitations, ContactsLoader.ContactLoaderInterface {
+public class EndUserPresenter implements EndUserContract.Presenter, DataManager.PushData,
+        DataManager.Invitations, ContactsLoader.ContactLoaderInterface,
+        DataManager.DataManagerEmergencyInterface {
+
     /**
      * Variable used for debug
      */
     private static final String TAG = EndUserPresenter.class.getSimpleName();
+
     /**
      * Variable used to identify the permission of the contacts.
      */
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
+
     /**
      * Context of the application.
      */
     private Context mContext;
+
     /**
      * View interface implemented by a activity or oder view component.
      */
@@ -53,6 +63,7 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
      * DataManager variable.
      */
     private DataManager mDataMngr;
+
     /**
      * OiDataBaseManager variable.
      */
@@ -85,13 +96,17 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
         if (checkContactsPermission())
             loadContacts();
 
+
+           startLocation();
+
         mDataMngr = DataManager.getInstance(mContext);
         mDataMngr.SYNC = true;
+        mDataMngr.setTypeOfUser("EndUser");
 
         if (Preferences.getMessageConfig(mActivity) != Preferences.DEFAULT_VALUE_MESSAGE_CONFIGURATION) {
             mDataMngr.registerPushPrefix();
         }
-        mDataMngr.expressAllEmergencyLLI();
+        //mDataMngr.expressAllEmergencyLLI();
 
         mDBMngr = OiDataBaseManager.getInstance(mContext);
         mDBMngr.openDB(true);
@@ -142,6 +157,10 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
             case pt.ulusofona.copelabs.oi.R.id.messageConfiguration:
                 mView.showMessageConfiguration();
                 break;
+            case R.id.cleanDB:
+                mDBMngr.deleteConversations();
+                mDBMngr.deleteMessages();
+                break;
         }
     }
 
@@ -175,6 +194,7 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
     public void registerAsListener() {
         DataManagerListenerManager.registerPushDataListener(this);
         DataManagerListenerManager.registerInvitationListener(this);
+        DataManagerListenerManager.registerEmergencyListeners(this);
     }
     /**
      * Unregisters the presenter as a listener of DataManager class.
@@ -183,11 +203,18 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
     public void unRegisterAsListener() {
         DataManagerListenerManager.unRegisterPushDataListener(this);
         DataManagerListenerManager.unRegisterInvitationListener(this);
+        DataManagerListenerManager.unRegisterEmergencyListeners(this);
     }
 
     @Override
     public void loadContacts() {
         new ContactsLoader(mActivity,this, mActivity.getLoaderManager());
+    }
+
+    @Override
+    public void startLocation() {
+        LocationListener location = LocationListener.getInstance(mContext);
+        location.start();
     }
 
     /**
@@ -205,9 +232,10 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
         return result;
     }
 
+
     /**
-     *
-     * @param message
+     * This method is call when a pData arrives to the applications.
+     * @param message Message
      */
     @Override
     public void pushDataArrives(Message message) {
@@ -215,8 +243,9 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
     }
 
     /**
-     *
-     * @param contact
+     * This method is called when the first interest of a conversation arrives to the
+     * application.
+     * @param contact Contact
      */
     @Override
     public void InvitationInConing(Contact contact) {
@@ -224,7 +253,7 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
     }
 
     /**
-     *
+     *This method is called when the contacts are loaded.
      * @param arrayList ArrayList of contact data collection.
      */
     @Override
@@ -232,5 +261,11 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
 
         mDataMngr.setLocalContact(Preferences.getLocalContact(mActivity));
         mDataMngr.setContactList(arrayList);
+    }
+
+
+    @Override
+    public void dataInComing(Message message) {
+
     }
 }

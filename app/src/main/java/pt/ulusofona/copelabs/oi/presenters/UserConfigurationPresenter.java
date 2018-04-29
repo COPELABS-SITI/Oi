@@ -1,6 +1,10 @@
 package pt.ulusofona.copelabs.oi.presenters;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import pt.ulusofona.copelabs.oi.activities.UserConfigurationActivity;
 import pt.ulusofona.copelabs.oi.helpers.Preferences;
@@ -40,16 +44,27 @@ public class UserConfigurationPresenter implements UserConfigurationContract.Pre
     private String mFromActivity;
 
     /**
+     * Context of the application.
+     */
+    private Context mContext;
+
+    /**
+     * Variable used to identify the permission of location.
+     */
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 2;
+
+    /**
      * Constructor of UserConfigurationPresenter class.
      * @param view View interface implemented by the activity.
      * @param activity Activity variable.
      * @param fromActivity information about from which activity was
      * initialized the UserConfiguration activity.
      */
-    public UserConfigurationPresenter(UserConfigurationContract.View view, Activity activity, String fromActivity) {
+    public UserConfigurationPresenter(UserConfigurationContract.View view, Activity activity, String fromActivity, Context context) {
         mView = view;
         mActivity = activity;
         mFromActivity = fromActivity;
+        mContext=context;
         start();
     }
 
@@ -60,11 +75,13 @@ public class UserConfigurationPresenter implements UserConfigurationContract.Pre
      */
     @Override
     public void start() {
-        if(mFromActivity.equals(UserConfigurationActivity.FROM_USER_SELECTION_ACTIVITY))
+        if(mFromActivity.equals(UserConfigurationActivity.FROM_USER_SELECTION_ACTIVITY)) {
             mView.showActivityContuntryCode();
-        else
+            checkLocationPermission();
+        }
+        else {
             mView.showDefaultActivity();
-
+        }
         Contact contact = Preferences.getLocalContact(mActivity);
         mView.showContactInformation(contact.getName(), contact.getID());
         mView.hidePhoneNumberErrorMessage();
@@ -130,5 +147,21 @@ public class UserConfigurationPresenter implements UserConfigurationContract.Pre
         }
     }
 
+    /**
+     * Function used to check the location permission.
+     * @return Boolean, where true value mean the the permission is granted, otherwise, false.
+     */
+    private boolean checkLocationPermission() {
+        boolean result = true;
+        int permissionCheck = ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionCheck1 = ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (permissionCheck == -1 && permissionCheck1 == -1) {
+            ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+            result = false;
+        }
+        return result;
+    }
 
 }

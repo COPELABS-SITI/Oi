@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,6 +79,9 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
      */
     private EditText mPhoneNumberEditTxt;
 
+    /**
+     * country code of the local contact.
+     */
     private EditText mCountryCode;
 
 
@@ -104,7 +106,7 @@ public class UserConfigurationActivity extends AppCompatActivity implements User
 
 
 
-        mPresenter = new UserConfigurationPresenter(this, this, getIntent().getStringExtra(FROM_ACTIVITY));
+        mPresenter = new UserConfigurationPresenter(this, this, getIntent().getStringExtra(FROM_ACTIVITY),this);
 
 
 

@@ -66,12 +66,14 @@ public class EmergencyMessageArrayAdapter extends ArrayAdapter {
         EmergencyMessageArrayAdapter.ViewHolder holder;
         if (convertView == null) {
             LayoutInflater inflater = mContext.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.emergency_message_view, null);
+            convertView = inflater.inflate(R.layout.emergency_message_view2, null);
             holder = new EmergencyMessageArrayAdapter.ViewHolder();
             holder.textViewContent = convertView.findViewById(R.id.messageContent);
             holder.textViewTime = convertView.findViewById(R.id.textViewTime);
             holder.textViewName = convertView.findViewById(R.id.textViewName);
             holder.textViewPhone = convertView.findViewById(R.id.textViewPhone);
+            holder.textViewLatitude = convertView.findViewById(R.id.textViewLatitude);
+            holder.textViewLongitude = convertView.findViewById(R.id.textViewLongitude);
             convertView.setTag(holder);
         } else {
 
@@ -82,7 +84,8 @@ public class EmergencyMessageArrayAdapter extends ArrayAdapter {
         holder.textViewTime.setText(mMessages.get(position).getCreationTime());
         holder.textViewName.setText(mMessages.get(position).getmUser());
         holder.textViewPhone.setText(mMessages.get(position).getFrom());
-
+        holder.textViewLatitude.setText(mMessages.get(position).getLatitude());
+        holder.textViewLongitude.setText(mMessages.get(position).getLontitude());
         return (convertView);
 
     }
@@ -110,5 +113,9 @@ public class EmergencyMessageArrayAdapter extends ArrayAdapter {
          * TextView that shows the phone number of who created the message.
          */
         TextView textViewPhone;
+
+        TextView textViewLatitude;
+
+        TextView textViewLongitude;
     }
 }

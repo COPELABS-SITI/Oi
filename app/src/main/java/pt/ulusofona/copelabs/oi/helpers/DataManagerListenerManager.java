@@ -82,7 +82,8 @@ public abstract class DataManagerListenerManager {
      * @param emergencyInterface DataManager.emergencyInterface listener.
      */
     public static void registerEmergencyListeners(DataManager.DataManagerEmergencyInterface emergencyInterface) {
-        emergencyListeners.add(emergencyInterface);
+        if(!emergencyListeners.contains(emergencyInterface))
+            emergencyListeners.add(emergencyInterface);
     }
 
     /**

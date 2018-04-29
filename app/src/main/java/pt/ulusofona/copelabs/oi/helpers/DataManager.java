@@ -2,8 +2,10 @@ package pt.ulusofona.copelabs.oi.helpers;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import pt.ulusofona.copelabs.oi.models.Contact;
 import pt.ulusofona.copelabs.oi.models.Message;
@@ -54,11 +56,11 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
     /**
      * Integer used to define the LifeTime of a typical interest NDN packet.
      */
-    public static double INTEREST_LIFETIME = 300000;
+    public static double INTEREST_LIFETIME = 60000;
     /**
      * Integer used to define the LifeTime of a Long Live Interest.
      */
-    public static double LLI_LIFETIME = 500000;
+    public static double LLI_LIFETIME = 600000;
     /**
      * Integer used to define the time to check events in the face.
      */
@@ -96,6 +98,11 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
      * Information about local contact.
      */
     private Contact mLocalContact;
+
+    /**
+     * This variable os used to save the type of user. End User or Authority.
+     */
+    private String mTypeOfUser =null;
     private Handler mHandler = new Handler();
     private Runnable mJndnProcessor = new Runnable() {
         @Override
@@ -105,6 +112,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         }
     };
 
+    private ArrayList<Message> mDataEmergency;
     /**
      * Data Manager constructor. In this method are performed the registration of the prefixes
      * related to the application.
@@ -118,6 +126,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         new RegisterPrefixTask(mFace, NameModule.PREFIX, this, this, mContext).execute();
         //new RegisterPrefixTask(mFace, NameModule.PREFIX, this, this, mContext).execute();
         mHandler.postDelayed(mJndnProcessor, PROCESS_INTERVAL);
+        mDataEmergency = new ArrayList();
     }
 
     public static DataManager getInstance(Context context) {
@@ -327,6 +336,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         if (SYNC) {
             if (data.getName().toString().contains("emergency")) {
                 Log.d(TAG, "data emergency");
+                mDataEmergency.add(Utils.parseJsonToEmergencyMessage(data.getContent().toString()));
                 DataManagerListenerManager.notifyDataEmergencyInComing(Utils.parseJsonToEmergencyMessage(data.getContent().toString()));
 
             } else {
@@ -360,7 +370,7 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
     @Override
     public void onInterest(Name name, Interest interest, Face face, long l, InterestFilter interestFilter) {
         Log.d(TAG, "onInterest");
-        Log.v(TAG, "Received Interest : " + interest.getName() + " [" + interest.getInterestLifetimeMilliseconds() + "]");
+        Log.d(TAG, "Received Interest : " + interest.getName() + " [" + interest.getInterestLifetimeMilliseconds() + "]");
 
         if (Utils.divide(interest.getName().toString()).equals("0")) {
 
@@ -414,6 +424,8 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
     public void onRegisterSuccess(Name name, long l) {
         Log.d(TAG, "Registration Success : " + name.toString());
         Log.d(TAG, "Register ok");
+        if(mTypeOfUser.equals("EndUser"))
+            expressAllEmergencyLLI();
     }
 
     /**
@@ -448,6 +460,15 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
     @Override
     public void onTimeout(Interest interest) {
         Log.d(TAG, "onTimeOut: " + interest.getName().toString());
+       if(interest.getName().toString().contains("emergency")){
+           try {
+               expressLLI(interest.getName().toString());
+           } catch (NoSuchAlgorithmException e) {
+               e.printStackTrace();
+           }
+       }
+
+
         if (!mDBMngr.hasMessage(interest.getName().toString()))
             new ExpressInterestTask(mFace, interest, this, this).execute();
     }
@@ -480,6 +501,13 @@ public class DataManager implements OnRegisterSuccess, OnRegisterFailed, OnInter
         return result;
     }
 
+    public void setTypeOfUser(String typeOfUser){
+        mTypeOfUser =typeOfUser;
+    }
+
+    public ArrayList<Message> getMessages(){
+        return mDataEmergency;
+    }
     /**
      * Interface used to notify when a new message arrived DataManager, when a message
      * was sent and when a message was received.

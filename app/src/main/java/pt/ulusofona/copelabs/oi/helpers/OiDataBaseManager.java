@@ -411,4 +411,11 @@ public class OiDataBaseManager {
 
         return exists;
     }
+
+    public void deleteConversations(){
+        mDb.delete(OiSQLiteHelper.TABLE_CHAT, null, null );
+    }
+    public void deleteMessages(){
+        mDb.delete(OiSQLiteHelper.TABLE_MESSAGE,null,null);
+    }
 }

@@ -67,6 +67,7 @@ public class ExpressInterestTask extends AsyncTask<Void, Void, Integer> implemen
         mInterest = interest;
         mOnDataCallback = odc;
         mOnTimeOot=onTimeout;
+
         Log.d(TAG, "interest time out: " + interest.getInterestLifetimeMilliseconds());
     }
 

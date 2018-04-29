@@ -195,6 +195,8 @@ public abstract class Utils {
             message.setCreationTime(jsonObject.getString("time"));
             message.setFrom(jsonObject.getString("from"));
             message.setUser(jsonObject.getString("sender"));
+            message.setLatitude(jsonObject.getString("la"));
+            message.setLongitud(jsonObject.getString("lo"));
             result = message;
 
         } catch (JSONException e) {
