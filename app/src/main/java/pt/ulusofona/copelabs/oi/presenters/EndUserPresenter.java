@@ -3,6 +3,7 @@ package pt.ulusofona.copelabs.oi.presenters;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -160,6 +161,11 @@ public class EndUserPresenter implements EndUserContract.Presenter, DataManager.
             case R.id.cleanDB:
                 mDBMngr.deleteConversations();
                 mDBMngr.deleteMessages();
+                mActivity.finish();
+                Intent i = mActivity.getBaseContext().getPackageManager()
+                        .getLaunchIntentForPackage( mActivity.getBaseContext().getPackageName() );
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mActivity.startActivity(i);
                 break;
         }
     }
